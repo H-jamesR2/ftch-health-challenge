@@ -1,0 +1,27 @@
+- headers:
+    user-agent: fetch-synthetic-monitor
+  method: GET
+  name: fetch index page
+  url: https://fetch.com/
+- headers:
+    user-agent: fetch-synthetic-monitor
+  method: GET
+  name: fetch careers page
+  url: https://fetch.com/careers
+- body: '{"foo":"bar"}'
+  headers:
+    content-type: application/json
+    user-agent: fetch-synthetic-monitor
+  method: POST
+  name: fetch some fake post endpoint
+  url: https://fetch.com/some/post/endpoint
+- name: fetch rewards index page
+  url: https://www.fetchrewards.com/
+# The following endpoint has an invalid method and missing name
+- method: FETCH
+  url: https://invalid-method.com/
+# The following endpoint has invalid JSON in body
+- name: invalid JSON endpoint
+  url: https://invalid-json.com/
+  method: POST
+  body: '{invalid json}'
