@@ -4,11 +4,13 @@ import (
 	"ftch-health-challenge/config"
 	"ftch-health-challenge/domain"
 	"ftch-health-challenge/httpcheck"
-	"log"
+	"ftch-health-challenge/util"
+	//"log"
 	"sync"
 	"time"
 )
 
+// MonitorEndpoints performs the health check for all endpoints every 15 seconds
 func MonitorEndpoints(endpoints []config.Endpoint) {
 	domainStats := make(map[string]*domain.DomainStats)
 	for {
@@ -35,7 +37,7 @@ func MonitorEndpoints(endpoints []config.Endpoint) {
 			splitResult := splitResult(result)
 			domainName, err := domain.GetDomain(splitResult[0])
 			if err != nil {
-				log.Println(err)
+				util.LogError("MonitorEndpoints: failed to get domain", err)
 				continue
 			}
 
@@ -52,12 +54,14 @@ func MonitorEndpoints(endpoints []config.Endpoint) {
 		// Log the availability stats after each round
 		domain.LogAvailability(domainStats)
 
+
+
 		// Sleep for 15 seconds before next round
 		time.Sleep(15 * time.Second)
 	}
 }
 
-// Helper function to split result into URL and status (e.g., "URL|UP" -> [URL, UP])
+// splitResult splits the result string into URL and status (e.g., "URL|UP" -> [URL, UP])
 func splitResult(result string) [2]string {
 	var res [2]string
 	for i, v := range result {

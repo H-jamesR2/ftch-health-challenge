@@ -112,19 +112,26 @@ go run main.go <path_to_config_file.yaml>
 
 ```bash
 go run main.go config.yaml
+go run main.go configTest2.yaml
 ```
 
 This will start monitoring the endpoints listed in `config.yaml`. The program will:
 - Check each endpoint every 15 seconds.
 - Log the cumulative availability percentage for each domain at the end of every 15-second cycle.
 
+'Ctrl+C' to exit out of program.
+
 ### Sample Output:
 
 ```
-2024-09-17T12:00:00Z INFO fetch.com has 33% availability percentage
-2024-09-17T12:00:00Z INFO www.fetchrewards.com has 100% availability percentage
-2024-09-17T12:00:15Z INFO fetch.com has 67% availability percentage
-2024-09-17T12:00:15Z INFO www.fetchrewards.com has 50% availability percentage
+2024/09/18 17:05:50 logger.go:19: INFO: ftch-health-challenge/httpcheck.CheckEndpoint: CheckEndpoint: endpoint 'fetch some fake post endpoint' is DOWN (Status: 403, Latency: 58ms)
+2024/09/18 17:05:50 logger.go:19: INFO: ftch-health-challenge/httpcheck.CheckEndpoint: CheckEndpoint: endpoint 'fetch careers page' is UP (Status: 200, Latency: 66ms)
+2024/09/18 17:05:50 logger.go:19: INFO: ftch-health-challenge/httpcheck.CheckEndpoint: CheckEndpoint: endpoint 'fetch index page' is UP (Status: 200, Latency: 71ms)
+2024/09/18 17:05:50 logger.go:19: INFO: ftch-health-challenge/httpcheck.CheckEndpoint: CheckEndpoint: endpoint 'fetch rewards index page' is UP (Status: 200, Latency: 102ms)
+- Availability Percentages:
+    invalid-json.com has 0% availability percentage
+    fetch.com has 66% availability percentage
+    www.fetchrewards.com has 100% availability percentage
 ```
 
 ## Logging
@@ -139,6 +146,7 @@ Each log entry includes:
 - Function where the error occurred
 - Detailed error message
 
+<!--
 You can optionally log output to a file. To do this, modify the `init()` function in `main.go` to point to a log file, as demonstrated below:
 
 ```go
@@ -148,6 +156,7 @@ if err != nil {
 }
 log.SetOutput(logFile)
 ```
+--> 
 
 ## Testing
 
@@ -174,8 +183,8 @@ The program includes comprehensive error handling and logging. If the YAML file 
 
 Example of an error log:
 ```
-2024-09-17T12:05:00Z ERROR in LoadConfig.Validate: missing 'url' for endpoint: Fetch Index Page
-2024-09-17T12:05:00Z ERROR in CheckEndpoint.ResponseCheck: Get "https://invalid-url.com/": dial tcp: lookup invalid-url.com: no such host
+2024/09/18 17:05:50 config.go:40: LoadConfig: skipping endpoint at index 4 due to missing 'name'
+2024/09/18 17:05:50 logger.go:13: ERROR: ftch-health-challenge/httpcheck.CheckEndpoint: CheckEndpoint: request failed: Post "https://invalid-json.com/": dial tcp: lookup invalid-json.com: no such host
 ```
 
 ## License
